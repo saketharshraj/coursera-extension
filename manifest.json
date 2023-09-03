@@ -1,20 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "ChatGPT Question Answerer",
+  "name": "Auto Answer Extension",
   "version": "1.0",
-  "description": "Extracts questions from a webpage and gets answers from ChatGPT.",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "description": "Automatically selects answers based on input",
+  "permissions": ["activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
-      "128": "icons/icon48.png"
+      "128": "icons/icon128.png"
     }
   },
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }

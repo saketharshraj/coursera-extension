@@ -1,3 +1,26 @@
+document.getElementById('fillResult').addEventListener('click', function() {
+    const answers = JSON.parse(document.getElementById('answersInput').value);
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.scripting.executeScript({
+            target: {tabId: tabs[0].id},
+            function: autoAnswer,
+            args: [answers]
+        });
+    });
+});
+
+function autoAnswer(answers) {
+    const quizzes = document.querySelectorAll('.rc-FormPartsMcq');
+    quizzes.forEach((quiz, index) => {
+        if (index < answers.length) {
+            const options = quiz.querySelectorAll('input[type="radio"]');
+            if (options[answers[index]]) {
+                options[answers[index]].click();
+            }
+        }
+    });
+}
+
 document.getElementById('generatePrompt').addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         const currentTab = tabs[0];
@@ -8,7 +31,7 @@ document.getElementById('generatePrompt').addEventListener('click', function() {
             // Display the results in the popup
             const questions = results[0].result;
             console.log(results)
-            let prompt = `I am giving a quiz test and below are ${questions.length} questions with their options. I want you to read each question and their options and give me the only correct option in json format like this  {"q1": "A"} and so on<br><br>`
+            let prompt = `I am giving a quiz test and below are ${questions.length} questions with their options. I want you to read each question and their options and give me the only correct option in array like this [0, 0, 1, 3, 1, 2]. Only give the array as ouput, nothing else.<br><br>`
             let displayText = '';
             displayText += prompt
             questions.forEach(q => {
