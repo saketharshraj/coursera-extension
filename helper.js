@@ -133,3 +133,14 @@ function autoAnswer(answers) {
         }
     });
 }
+
+function getAnswerIndex(currentQuiz, savedQuizzes) {
+    const existingQuizIndex = savedQuizzes.findIndex(quiz => stringIsSimilar(quiz.question, currentQuiz.question));
+    if (existingQuizIndex !== -1) {
+        const correctOptionValue = savedQuizzes[existingQuizIndex].answer;
+        const currentQuizOptions = currentQuiz.options;
+        const correctOptionIndex = currentQuizOptions.findIndex(option => stringIsSimilar(option, correctOptionValue));
+        return correctOptionIndex;
+    }
+    return -1
+}
