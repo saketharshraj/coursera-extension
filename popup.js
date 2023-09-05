@@ -58,30 +58,18 @@ document.getElementById('saveQuiz').addEventListener('click', function () {
                 const currentQuizzes = results[0].result;
 
                 // Retrieve existing quizzes from localStorage or initialize an empty array
-                let quizzes = [];
+                let savedQuizzes = [];
                 try {
-                    quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+                    savedQuizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
                 } catch (err) {
-                    quizzes = [];
+                    savedQuizzes = [];
                     console.log(err);
                 }
 
-                for (const currentQuiz of currentQuizzes) {
-                    // Check if the question already exists in the stored quizzes
-                    const existingQuizIndex = quizzes.findIndex((quiz) =>
-                        stringIsSimilar(quiz.question, currentQuiz.question),
-                    );
-
-                    if (existingQuizIndex !== -1) {
-                        // If the question exists (with a similarity score greater than equal to 0.95), update the existing entry
-                        quizzes[existingQuizIndex] = currentQuiz;
-                    } else {
-                        // Otherwise, append the new quiz
-                        quizzes.push(currentQuiz);
-                    }
-                }
+                const mergedQuizzes = smartMerge(currentQuizzes, savedQuizzes) 
+                
                 // Save the updated quizzes array back to localStorage
-                localStorage.setItem('quizzes', JSON.stringify(quizzes));
+                localStorage.setItem('quizzes', JSON.stringify(mergedQuizzes));
             },
         );
     });
@@ -153,8 +141,7 @@ document.getElementById('fileInput').addEventListener('change', function () {
                 if (Array.isArray(uploadedData)) {
                     const existingData =
                         JSON.parse(localStorage.getItem('quizzes')) || [];
-                    const combinedData = existingData.concat(uploadedData);
-                    console.log('Combined Data', combinedData)
+                    const combinedData = smartMerge(existingData, uploadedData);
                     localStorage.setItem(
                         'quizzes',
                         JSON.stringify(combinedData),

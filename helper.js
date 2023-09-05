@@ -172,3 +172,22 @@ function getAnswerIndex(currentQuiz, savedQuizzes) {
     }
     return -1
 }
+
+function smartMerge(currentQuizzes, savedQuizzes) {
+    const finalQuizzes = []
+    for (const currentQuiz of currentQuizzes) {
+        // Check if the question already exists in the stored quizzes
+        const existingQuizIndex = savedQuizzes.findIndex((quiz) =>
+            stringIsSimilar(quiz.question, currentQuiz.question),
+        );
+
+        if (existingQuizIndex !== -1) {
+            // If the question exists (with a similarity score greater than equal to 0.95), update the existing entry
+            savedQuizzes[existingQuizIndex] = currentQuiz;
+        } else {
+            // Otherwise, append the new quiz
+            finalQuizzes.push(currentQuiz);
+        }
+    }
+    return finalQuizzes.concat(savedQuizzes);
+}
