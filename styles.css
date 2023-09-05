@@ -105,6 +105,10 @@ button:hover {
 }
 
 /* Developer Mode Buttons */
+.dev-tools {
+    display: none;
+}
+
 .dev-tools button {
     background-color: #FFA500; /* Orange */
     color: white;
