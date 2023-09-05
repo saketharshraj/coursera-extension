@@ -1,39 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Scrape Extension</title>
-        <link rel="stylesheet" href="styles.css" />
-    </head>
-    <body>
-        <h3>Coursera Quiz Solver</h3>
-        <div class="devModeContainer">
-            <h4>Developer Mode</h4>
-            <label class="switch">
-                <input type="checkbox" id="devModeToggle" />
-                <span class="slider round"></span>
-            </label>
-        </div>
-
-        <button id="uploadAnswers">Upload Answers</button>
-        <button id="findAndMarkAnswers">Mark Answers</button>
-
-        <div class="dev-tools">
-            <textarea
-                id="answersInput"
-                placeholder="Paste answers array here"
-                rows="4"
-            ></textarea>
-            <button id="fillResult">Fill Array Result</button>
-            <button id="saveQuiz">Save Quiz</button>
-            <button id="generatePrompt">Generate Prompt</button>
-            <button id="exportButton">Export Answers</button>
-            <button id="copyButton">Copy</button>
-            <div id="results"></div>
-        </div>
-        <script src="helper.js"></script>
-        <script src="popup.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scrape Extension</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="toggle.css" />
+</head>
+<body>
+    <h3>Coursera Quiz Solver</h3>
+    <div class="devModeContainer">
+        <h4>Developer Mode</h4>
+        <label class="switch">
+            <input type="checkbox" id="devModeToggle" />
+            <span class="slider round"></span>
+        </label>
+    </div>
+    <label for="fileInput" class="drop-container" id="dropcontainer">
+        <span class="drop-title">Drop JSON files here</span>
+        or
+        <span class="browse-text">Browse...</span>
+        <input type="file" id="fileInput" accept=".json" required />
+    </label>
+    <div class="button-container">
+        <button id="findAndMarkAnswers" class="full-width">Mark Answers</button>
+    </div>
+    <div class="dev-tools">
+        <textarea id="answersInput" placeholder="Paste answers array here" rows="4"></textarea>
+        <button id="fillResult">Fill Array Result</button>
+        <button id="saveQuiz">Save Quiz</button>
+        <button id="generatePrompt">Generate Prompt</button>
+        <button id="exportButton">Export Answers</button>
+        <button id="copyButton">Copy</button>
+        <div id="results"></div>
+    </div>
+    <script src="helper.js"></script>
+    <script src="popup.js"></script>
+</body>
 </html>
-

@@ -139,3 +139,36 @@ document
             },
         );
     });
+
+document.getElementById('fileInput').addEventListener('change', function () {
+    const file = this.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            try {
+                const uploadedData = JSON.parse(event.target.result);
+
+                // Validate the uploaded data if necessary
+                if (Array.isArray(uploadedData)) {
+                    const existingData =
+                        JSON.parse(localStorage.getItem('quizzes')) || [];
+                    const combinedData = existingData.concat(uploadedData);
+
+                    localStorage.setItem(
+                        'quizzes',
+                        JSON.stringify(combinedData),
+                    );
+                    alert('Answers uploaded successfully!');
+                } else {
+                    alert('Invalid JSON file format.');
+                }
+            } catch (error) {
+                alert('Error parsing JSON file.');
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        alert('Please select a JSON file first.');
+    }
+});
