@@ -25,10 +25,11 @@ function levenshteinDistance(a, b) {
     return matrix[b.length][a.length];
 }
 
-function stringSimilarity(str1, str2) {
+function stringIsSimilar(str1, str2) {
     const distance = levenshteinDistance(str1, str2);
     const longest = Math.max(str1.length, str2.length);
-    return (longest - distance) / longest;
+    let match = ((longest - distance) / longest) * 100;
+    return Math.round(match) >= 95;
 }
 
 function scrapeWebPage() {
@@ -73,8 +74,12 @@ function updatePopupDOM(questions) {
 function scrapeQuestionAndCheckedOption() {
     const questions = [];
     const quizzes = document.getElementsByClassName('rc-FormPartsQuestion');
-
+    
     for (let quiz of quizzes) {
+        const quiz_data = quiz.getElementsByClassName('css-1kgqbsw');
+        const isIncorrect = quiz.querySelector('[data-testid="GradeFeedback-caption"]')?.textContent.trim() === "Incorrect";
+        if (isIncorrect) continue; // Skip this quiz if the answer is incorrect
+
         const questionElement = quiz.querySelector(
             '.css-1kgqbsw > p > span > span',
         );

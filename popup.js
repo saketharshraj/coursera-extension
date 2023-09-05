@@ -35,14 +35,29 @@ document.getElementById("saveQuiz").addEventListener('click', function() {
             target: {tabId: tabs[0].id},
             function: scrapeQuestionAndCheckedOption,
         }, (results) => {
-            const questions = results[0].result;
+            const currentQuizzes = results[0].result;
 
             // Retrieve existing quizzes from localStorage or initialize an empty array
-            const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
-
-            // Append the current quiz to the array
-            quizzes.push(currentQuiz);
-
+            let quizzes = [];
+            try {
+                quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+            } catch(err) {
+                quizzes = []
+                console.log(err)
+            }
+            
+            for (const currentQuiz of currentQuizzes) {
+                // Check if the question already exists in the stored quizzes
+                const existingQuizIndex = quizzes.findIndex(quiz => stringIsSimilar(quiz.question, currentQuiz.question));
+            
+                if (existingQuizIndex !== -1) {
+                    // If the question exists (with a similarity score greater than equal to 0.95), update the existing entry
+                    quizzes[existingQuizIndex] = currentQuiz;
+                } else {
+                    // Otherwise, append the new quiz
+                    quizzes.push(currentQuiz);
+                }
+            }
             // Save the updated quizzes array back to localStorage
             localStorage.setItem('quizzes', JSON.stringify(quizzes));
         });
