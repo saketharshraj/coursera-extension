@@ -86,3 +86,22 @@ document.getElementById('exportButton').addEventListener('click', function() {
 });
 
 
+document.getElementById('getAnswers').addEventListener('click', function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        const currentTab = tabs[0];
+        chrome.scripting.executeScript({
+            target: {tabId: currentTab.id},
+            function: scrapeWebPage
+        }, (results) => {
+            const questions = results[0].result;
+            const savedAnswers = JSON.parse(localStorage.getItem('quizzes')) || [];
+            const currentQuizAnswers = [];
+            for (const question of questions) {
+                // returns the index of the answer or returns -1 if doesn't exist
+                const answerIndex =  getAnswerIndex(question, savedAnswers)
+                currentQuizAnswers.push(answerIndex)
+            }
+            document.getElementById('answersInput').innerHTML = JSON.stringify(currentQuizAnswers);
+        });
+    });
+})
