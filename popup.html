@@ -1,62 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrape Extension</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            width: 300px;
-            padding: 10px;
-        }
-        button {
-            margin: 5px 0;
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        textarea {
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-        #results {
-            margin-top: 10px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            position: relative;
-        }
-        #copyButton {
-            top: 5px;
-            right: 5px;
-            display: none; /* Initially hidden */
-        }
-    </style>
-</head>
-<body>
-    <h3>Scrape Extension</h3>
-    <textarea id="answersInput" placeholder="Paste answers array here" rows="4"></textarea>
-    <button id="saveQuiz">Save Quiz</button>
-    <button id="generatePrompt">Generate Prompt</button>
-    <button id="fillResult">Fill Result</button>
-    <button id="uploadAnswers">Upload Answers</button>
-    <button id="exportButton">Export Answers</button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Scrape Extension</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h3>Coursera Quiz Solver</h3>
+        <div class="devModeContainer">
+            <h4>Developer Mode</h4>
+            <label class="switch">
+                <input type="checkbox" id="devModeToggle" />
+                <span class="slider round"></span>
+            </label>
+        </div>
 
-    <button id="copyButton">Copy</button>
-    <div id="results">
-    </div>
-    <script src="helper.js"></script>
-    <script src="popup.js"></script>
-</body>
+        <button id="uploadAnswers">Upload Answers</button>
+        <button id="findAndMarkAnswers">Mark Answers</button>
+
+        <div class="dev-tools">
+            <textarea
+                id="answersInput"
+                placeholder="Paste answers array here"
+                rows="4"
+            ></textarea>
+            <button id="fillResult">Fill Array Result</button>
+            <button id="saveQuiz">Save Quiz</button>
+            <button id="generatePrompt">Generate Prompt</button>
+            <button id="exportButton">Export Answers</button>
+            <button id="copyButton">Copy</button>
+            <div id="results"></div>
+        </div>
+        <script src="helper.js"></script>
+        <script src="popup.js"></script>
+        <script>
+            // Toggle Developer Mode
+            document
+                .getElementById('devModeToggle')
+                .addEventListener('change', function () {
+                    const devTools = document.querySelector('.dev-tools');
+                    if (this.checked) {
+                        devTools.style.display = 'block';
+                    } else {
+                        devTools.style.display = 'none';
+                    }
+                });
+        </script>
+    </body>
 </html>
+
