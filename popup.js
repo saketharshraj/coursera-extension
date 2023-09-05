@@ -9,18 +9,6 @@ document.getElementById('fillResult').addEventListener('click', function() {
     });
 });
 
-function autoAnswer(answers) {
-    const quizzes = document.querySelectorAll('.rc-FormPartsMcq');
-    quizzes.forEach((quiz, index) => {
-        if (index < answers.length) {
-            const options = quiz.querySelectorAll('input[type="radio"]');
-            if (options[answers[index]]) {
-                options[answers[index]].click();
-            }
-        }
-    });
-}
-
 document.getElementById('generatePrompt').addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         const currentTab = tabs[0];
@@ -28,55 +16,58 @@ document.getElementById('generatePrompt').addEventListener('click', function() {
             target: {tabId: currentTab.id},
             function: scrapeWebPage
         }, (results) => {
-            // Display the results in the popup
+            // Process the results
             const questions = results[0].result;
-            console.log(results)
-            let prompt = `I am giving a quiz test and below are ${questions.length} questions with their options. I want you to read each question and their options and give me the only correct option in array like this [0, 0, 1, 3, 1, 2]. Only give the array as ouput, nothing else.<br><br>`
-            let displayText = '';
-            displayText += prompt
-            questions.forEach(q => {
-                displayText += `<strong>${q.question}</strong><br>`;
-                displayText += `${q.options.replace(/\n/g, '<br>')}<br><br>`; // Convert newlines to <br> for HTML display
-            });
-            document.getElementById('results').innerHTML = displayText;
+            updatePopupDOM(questions);
         });
     });
 });
-
 
 document.getElementById('copyButton').addEventListener('click', function() {
     const textToCopy = document.getElementById('results').innerText;
     copyToClipboard(textToCopy);
 });
 
-function copyToClipboard(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textarea);
-}
 
-function scrapeWebPage() {
-    const questions = [];
-    const quizzes = document.getElementsByClassName('rc-FormPartsQuestion');
-    let questionCounter = 1; // To keep track of the question number
+document.getElementById("saveQuiz").addEventListener('click', function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.scripting.executeScript({
+            target: {tabId: tabs[0].id},
+            function: scrapeQuestionAndCheckedOption,
+        }, (results) => {
+            const questions = results[0].result;
 
-    for (let quiz of quizzes) {
-        const quiz_data = quiz.getElementsByClassName('css-1kgqbsw');
-        const question = `Q${questionCounter} ${quiz_data[0].textContent}`;
-        const options = Array.from(quiz_data).slice(1).map((opt, index) => {
-            const optionLetter = String.fromCharCode(65 + index); // Convert 0 to A, 1 to B, etc.
-            return `${optionLetter}) ${opt.textContent}`;
-        }).join('\n'); // Join the options with a newline
+            // Retrieve existing quizzes from localStorage or initialize an empty array
+            const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
 
-        questions.push({
-            'question': question,
-            'options': options
+            // Append the current quiz to the array
+            quizzes.push(currentQuiz);
+
+            // Save the updated quizzes array back to localStorage
+            localStorage.setItem('quizzes', JSON.stringify(quizzes));
         });
+    });
+})
 
-        questionCounter++; // Increment the question number for the next iteration
-    }
-    return questions;
-}
+
+document.getElementById('exportButton').addEventListener('click', function() {
+    // Retrieve quizzes from localStorage
+    const quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+
+    // Convert quizzes array to a JSON string
+    const jsonString = JSON.stringify(quizzes, null, 2); // The "2" here is for pretty-printing the JSON
+
+    // Create a Blob from the JSON string
+    const blob = new Blob([jsonString], { type: 'application/json' });
+
+    // Create a download link for the Blob
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quizzes.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
+
+
