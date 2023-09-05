@@ -58,6 +58,32 @@ function scrapeWebPage() {
     return questions;
 }
 
+
+function scrapeQuestionAnswer() {
+    const questions = [];
+    const quizzes = document.getElementsByClassName('rc-FormPartsQuestion');
+    let questionCounter = 1; // To keep track of the question number
+
+    for (let quiz of quizzes) {
+        const quiz_data = quiz.getElementsByClassName('css-1kgqbsw');
+        const question = quiz_data[0].textContent;
+        const options = Array.from(quiz_data)
+            .slice(1)
+            .map((opt, index) => {
+                const optionLetter = String.fromCharCode(65 + index); // Convert 0 to A, 1 to B, etc.
+                return opt.textContent.trim();
+            })
+
+        questions.push({
+            question: question,
+            options: options,
+        });
+
+        questionCounter++; // Increment the question number for the next iteration
+    }
+    return questions;
+}
+
 function updatePopupDOM(questions) {
     let prompt = `I am giving a quiz test and below are ${questions.length} questions with their options. I want you to read each question and their options and give me the only correct option in array, array must be 0-indexed like 0 for A, 1 for B and so on. Only give the array as ouput, nothing else.<br><br>`;
     let displayText = '';
@@ -135,6 +161,8 @@ function autoAnswer(answers) {
 }
 
 function getAnswerIndex(currentQuiz, savedQuizzes) {
+    console.log('Current Quiz', currentQuiz)
+    console.log('Saved Quiz', savedQuizzes);
     const existingQuizIndex = savedQuizzes.findIndex(quiz => stringIsSimilar(quiz.question, currentQuiz.question));
     if (existingQuizIndex !== -1) {
         const correctOptionValue = savedQuizzes[existingQuizIndex].answer;

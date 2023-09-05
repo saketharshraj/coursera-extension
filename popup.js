@@ -117,7 +117,7 @@ document
                 chrome.scripting.executeScript(
                     {
                         target: { tabId: currentTab.id },
-                        function: scrapeWebPage,
+                        function: scrapeQuestionAnswer,
                     },
                     (results) => {
                         const questions = results[0].result;
@@ -134,6 +134,7 @@ document
                         }
                         document.getElementById('answersInput').innerHTML =
                             JSON.stringify(currentQuizAnswers);
+                        document.getElementById('fillResult').click();
                     },
                 );
             },
@@ -148,13 +149,12 @@ document.getElementById('fileInput').addEventListener('change', function () {
         reader.onload = function (event) {
             try {
                 const uploadedData = JSON.parse(event.target.result);
-
                 // Validate the uploaded data if necessary
                 if (Array.isArray(uploadedData)) {
                     const existingData =
                         JSON.parse(localStorage.getItem('quizzes')) || [];
                     const combinedData = existingData.concat(uploadedData);
-
+                    console.log('Combined Data', combinedData)
                     localStorage.setItem(
                         'quizzes',
                         JSON.stringify(combinedData),
