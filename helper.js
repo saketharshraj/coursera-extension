@@ -191,3 +191,24 @@ function smartMerge(currentQuizzes, savedQuizzes) {
     }
     return finalQuizzes.concat(savedQuizzes);
 }
+
+// Function to handle the file reading and storage
+function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        try {
+            const uploadedData = JSON.parse(event.target.result);
+            if (Array.isArray(uploadedData)) {
+                const existingData = JSON.parse(localStorage.getItem('quizzes')) || [];
+                const combinedData = smartMerge(existingData, uploadedData);
+                localStorage.setItem('quizzes', JSON.stringify(combinedData));
+                alert('Answers uploaded successfully!');
+            } else {
+                alert('Invalid JSON file format.');
+            }
+        } catch (error) {
+            alert('Error parsing JSON file.');
+        }
+    };
+    reader.readAsText(file);
+}

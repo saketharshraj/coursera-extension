@@ -81,3 +81,8 @@ input[type="file"] {
 .dev-tools button:hover {
     background-color: #cc8400;
 }
+
+.drop-container[data-dragging="true"] {
+    background-color: #f7f7f7;
+    border-color: #2196F3;
+}
